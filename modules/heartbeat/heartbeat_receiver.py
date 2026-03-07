@@ -27,17 +27,18 @@ class HeartbeatReceiver:
         """
         Falliable create (instantiation) method to create a HeartbeatReceiver object.
         """
-        pass  # Create a HeartbeatReceiver object
 
     def __init__(
         self,
         key: object,
         connection: mavutil.mavfile,
-        args,  # Put your own arguments here
     ) -> None:
         assert key is HeartbeatReceiver.__private_key, "Use create() method"
 
-        # Do any intializiation here
+        self.connection = connection
+        self.missed_heartbeats = 0
+        self.max_missed_heartbeats = 5
+        self.is_connected = False
 
     def run(
         self,
