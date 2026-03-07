@@ -12,19 +12,18 @@ from utilities.workers import worker_controller
 from . import heartbeat_sender
 from ..common.modules.logger import logger
 
-
 # =================================================================================================
 #                            ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
 # =================================================================================================
 def heartbeat_sender_worker(
     connection: mavutil.mavfile,
-    args,  # Place your own arguments here
-    # Add other necessary worker arguments here
+    controller: worker_controller.WorkerController,
 ) -> None:
     """
     Worker process.
 
-    args... describe what the arguments are
+    connection: the MAVLink connection used to send heartbeats
+    controller: the worker controller used to manage the worker to pause/resume/exit
     """
     # =============================================================================================
     #                          ↑ BOOTCAMPERS MODIFY ABOVE THIS COMMENT ↑
@@ -46,10 +45,23 @@ def heartbeat_sender_worker(
     # =============================================================================================
     #                          ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
     # =============================================================================================
+    
     # Instantiate class object (heartbeat_sender.HeartbeatSender)
+    result, heartbeat_sender_object = heartbeat_sender.HeartbeatSender.create(connection)
+    if not result:
+        local_logger.error("Failed to create heartbeat sender", True)
+        return
+    assert heartbeat_sender_object is not None
 
     # Main loop: do work.
-
+    while not controller.is_exit_requested():
+        try:
+            controller.check_pause()
+            heartbeat_sender_object.run()
+            time.sleep(1)
+        except Exception as e:
+            local_logger.error(f"Failed to send heartbeat: {e}", True)
+            return
 
 # =================================================================================================
 #                            ↑ BOOTCAMPERS MODIFY ABOVE THIS COMMENT ↑
