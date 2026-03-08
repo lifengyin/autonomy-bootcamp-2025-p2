@@ -37,25 +37,40 @@ class Command:  # pylint: disable=too-many-instance-attributes
         cls,
         connection: mavutil.mavfile,
         target: Position,
-        args,  # Put your own arguments here
         local_logger: logger.Logger,
     ):
         """
         Falliable create (instantiation) method to create a Command object.
         """
-        pass  #  Create a Command object
+        try:
+            command_object = cls(cls.__private_key, connection, target, local_logger)
+            return True, command_object
+        except Exception as e:
+            local_logger.error(f"Failed to create command: {e}", True)
+            return False, None
 
     def __init__(
         self,
         key: object,
         connection: mavutil.mavfile,
         target: Position,
-        args,  # Put your own arguments here
         local_logger: logger.Logger,
     ) -> None:
         assert key is Command.__private_key, "Use create() method"
 
-        # Do any intializiation here
+        self.connection = connection
+        self.target = target
+        self.local_logger = local_logger
+
+        self.velocity_sample_count = 0
+        self.velocity_sum_x = 0.0
+        self.velocity_sum_y = 0.0
+        self.velocity_sum_z = 0.0
+
+        self.height_tolerance = 0.5
+        self.z_speed = 1.0
+        self.angle_tolerance_deg = 5.0
+        self.turning_speed_deg_s = 5.0
 
     def run(
         self,
