@@ -74,22 +74,91 @@ class Command:  # pylint: disable=too-many-instance-attributes
 
     def run(
         self,
-        args,  # Put your own arguments here
-    ):
+        telemetry_data: telemetry.TelemetryData,
+    ) -> str:
         """
         Make a decision based on received telemetry data.
         """
-        # Log average velocity for this trip so far
 
-        # Use COMMAND_LONG (76) message, assume the target_system=1 and target_componenet=0
-        # The appropriate commands to use are instructed below
+        actions: list[str] = []
+        try:
+            # Log average velocity of all received telemetry so far.
+            if (
+                telemetry_data.x_velocity is not None
+                and telemetry_data.y_velocity is not None
+                and telemetry_data.z_velocity is not None
+            ):
+                self.velocity_sample_count += 1
+                count = self.velocity_sample_count
 
-        # Adjust height using the comand MAV_CMD_CONDITION_CHANGE_ALT (113)
-        # String to return to main: "CHANGE_ALTITUDE: {amount you changed it by, delta height in meters}"
+                self.velocity_sum_x += telemetry_data.x_velocity
+                self.velocity_sum_y += telemetry_data.y_velocity
+                self.velocity_sum_z += telemetry_data.z_velocity
+    
+                avg_velocity_x = self.velocity_sum_x / count
+                avg_velocity_y = self.velocity_sum_y / count
+                avg_velocity_z = self.velocity_sum_z / count
 
-        # Adjust direction (yaw) using MAV_CMD_CONDITION_YAW (115). Must use relative angle to current state
-        # String to return to main: "CHANGING_YAW: {degree you changed it by in range [-180, 180]}"
-        # Positive angle is counter-clockwise as in a right handed system
+                self.local_logger.info(
+                    (
+                        "Average velocity: "
+                        f"x: {avg_velocity_x:.3f} m/s"
+                        f"y: {avg_velocity_y:.3f} m/s"
+                        f"z: {avg_velocity_z:.3f} m/s"
+                    ),
+                    True,
+                )
+
+            # Altitude command: move up/down to target z.
+            if telemetry_data.z is not None:
+                dz = self.target.z - telemetry_data.z
+                
+                # If too far, adjust altitude to target z
+                if abs(dz) > self.height_tolerance:
+                    self.connection.mav.command_long_send(
+                        1,
+                        0,
+                        mavutil.mavlink.MAV_CMD_CONDITION_CHANGE_ALT,
+                        0,
+                        float(self.z_speed),
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        float(self.target.z),
+                    )
+                    actions.append(f"CHANGE ALTITUDE: {dz:.3f}")
+
+            # Yaw command: rotate to face target.
+            if telemetry_data.x is not None and telemetry_data.y is not None and telemetry_data.yaw is not None:
+                # Use arctan to get desired yaw angle in rad
+                yaw_rad = math.atan2(self.target.y - telemetry_data.y, self.target.x - telemetry_data.x)
+                # Find change in yaw in degrees.
+                yaw_delta_deg = math.degrees(yaw_rad - telemetry_data.yaw)
+                # Convert to angle from -180 to 180 deg.
+                signed_yaw_deg = ((yaw_delta_deg + 180.0) % 360.0) - 180.0
+
+                if abs(signed_yaw_deg) > self.angle_tolerance_deg:
+                    self.connection.mav.command_long_send(
+                        1,
+                        0,
+                        mavutil.mavlink.MAV_CMD_CONDITION_YAW,
+                        0,
+                        float(signed_yaw_deg),
+                        float(self.turning_speed_deg_s),
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                    )
+                    actions.append(f"CHANGING_YAW: {signed_yaw_deg:.3f}")
+        except Exception as e:
+            self.local_logger.error(f"Failed to run command: {e}", True)
+            return "NO_COMMAND"
+
+        return "; ".join(actions) if actions else "NO_COMMAND"
 
 
 # =================================================================================================
