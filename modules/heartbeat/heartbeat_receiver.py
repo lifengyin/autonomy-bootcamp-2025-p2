@@ -65,7 +65,7 @@ class HeartbeatReceiver:
                 self.is_connected = True
             else:
                 self.missed_heartbeats += 1
-                self.local_logger.error(
+                self.local_logger.warning(
                     f"Missed heartbeat {self.missed_heartbeats} (out of a max of {self.max_missed_heartbeats})", True
                 )
                 
