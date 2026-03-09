@@ -80,7 +80,6 @@ class Command:  # pylint: disable=too-many-instance-attributes
         Make a decision based on received telemetry data.
         """
 
-        actions: list[str] = []
         try:
             # Log average velocity of all received telemetry so far.
             if (
@@ -128,7 +127,7 @@ class Command:  # pylint: disable=too-many-instance-attributes
                         0.0,
                         float(self.target.z),
                     )
-                    actions.append(f"CHANGE ALTITUDE: {dz:.3f}")
+                    return f"CHANGE ALTITUDE: {dz:.3f}"
 
             # Yaw command: rotate to face target.
             if telemetry_data.x is not None and telemetry_data.y is not None and telemetry_data.yaw is not None:
@@ -153,12 +152,12 @@ class Command:  # pylint: disable=too-many-instance-attributes
                         0.0,
                         0.0,
                     )
-                    actions.append(f"CHANGING_YAW: {signed_yaw_deg:.3f}")
+                    return f"CHANGE YAW: {signed_yaw_deg:.3f}"
         except Exception as e:
             self.local_logger.error(f"Failed to run command: {e}", True)
             return "NO_COMMAND"
 
-        return "; ".join(actions) if actions else "NO_COMMAND"
+        return "NO_COMMAND"
 
 
 # =================================================================================================
