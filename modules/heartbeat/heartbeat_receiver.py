@@ -2,6 +2,8 @@
 Heartbeat receiving logic.
 """
 
+from __future__ import annotations
+
 from pymavlink import mavutil
 
 from ..common.modules.logger import logger
@@ -22,7 +24,7 @@ class HeartbeatReceiver:
         cls,
         connection: mavutil.mavfile,
         local_logger: logger.Logger,
-    ):
+    ) -> tuple[bool, HeartbeatReceiver | None]:
         """
         Falliable create (instantiation) method to create a HeartbeatReceiver object.
         """
@@ -48,7 +50,7 @@ class HeartbeatReceiver:
         self.max_missed_heartbeats = 5
         self.is_connected = False
 
-    def run(self):
+    def run(self) -> str:
         """
         Attempt to recieve a heartbeat message.
         If disconnected for over a threshold number of periods,
