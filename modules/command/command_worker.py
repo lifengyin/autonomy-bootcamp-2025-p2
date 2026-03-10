@@ -71,7 +71,7 @@ def command_worker(
                 main_queue.queue.put(result)
         except queue.Empty:
             continue
-        except Exception as e:
+        except (OSError, TimeoutError, ValueError) as e:
             local_logger.error(f"Failed to run command: {e}", True)
             return
 

@@ -47,7 +47,7 @@ class Command:  # pylint: disable=too-many-instance-attributes
         try:
             command_object = cls(cls.__private_key, connection, target, local_logger)
             return True, command_object
-        except Exception as e:
+        except (AssertionError, TypeError, ValueError) as e:
             local_logger.error(f"Failed to create command: {e}", True)
             return False, None
 
@@ -161,7 +161,7 @@ class Command:  # pylint: disable=too-many-instance-attributes
                         0.0,
                     )
                     return f"CHANGE YAW: {signed_yaw_deg:.3f}"
-        except Exception as e:
+        except (OSError, TimeoutError, ValueError) as e:
             self.local_logger.error(f"Failed to run command: {e}", True)
             return "NO_COMMAND"
 

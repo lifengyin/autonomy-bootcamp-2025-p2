@@ -85,7 +85,7 @@ class Telemetry:
         """
         try:
             return True, cls(cls.__private_key, connection, local_logger)
-        except Exception as e:
+        except (AssertionError, TypeError, ValueError) as e:
             local_logger.error(f"Failed to create telemetry: {e}", True)
             return False, None
 
@@ -157,7 +157,7 @@ class Telemetry:
                 yaw_speed=attitude.yawspeed,
             )
 
-        except Exception as e:
+        except (OSError, TimeoutError, ValueError) as e:
             self.local_logger.error(f"Failed to receive telemetry: {e}", True)
             return None
 

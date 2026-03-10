@@ -63,7 +63,7 @@ def heartbeat_receiver_worker(
             controller.check_pause()
             status = heartbeat_receiver_object.run()
             main_queue.queue.put(status)
-        except Exception as e:
+        except (OSError, TimeoutError, ValueError) as e:
             local_logger.error(f"Failed to receive heartbeat: {e}", True)
             return
 

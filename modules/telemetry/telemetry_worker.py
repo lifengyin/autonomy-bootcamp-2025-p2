@@ -61,7 +61,7 @@ def telemetry_worker(
             controller.check_pause()
             telemetry_data = telemetry_object.run()
             main_queue.queue.put(telemetry_data)
-        except Exception as e:
+        except (OSError, TimeoutError, ValueError) as e:
             local_logger.error(f"Failed to receive telemetry: {e}", True)
             return
 

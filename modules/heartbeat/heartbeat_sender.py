@@ -25,7 +25,7 @@ class HeartbeatSender:
         """
         try:
             return True, cls(cls.__private_key, connection)
-        except Exception:
+        except (AssertionError, TypeError, ValueError):
             return False, None
 
     def __init__(self, key: object, connection: mavutil.mavfile) -> None:
@@ -44,7 +44,7 @@ class HeartbeatSender:
                 0,
                 0,
             )
-        except Exception:
+        except (OSError, TimeoutError, ValueError):
             pass
 
 

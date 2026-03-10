@@ -60,7 +60,7 @@ def heartbeat_sender_worker(
             controller.check_pause()
             heartbeat_sender_object.run()
             time.sleep(1)
-        except Exception as e:
+        except (OSError, TimeoutError, ValueError) as e:
             local_logger.error(f"Failed to send heartbeat: {e}", True)
             return
 

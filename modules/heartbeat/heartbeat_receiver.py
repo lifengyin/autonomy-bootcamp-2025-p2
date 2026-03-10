@@ -32,7 +32,7 @@ class HeartbeatReceiver:
         try:
             heartbeat_reciever_object = cls(cls.__private_key, connection, local_logger)
             return True, heartbeat_reciever_object
-        except Exception as e:
+        except (AssertionError, TypeError, ValueError) as e:
             local_logger.error(f"Failed to create heartbeat receiver: {e}", True)
             return False, None
 
@@ -75,7 +75,7 @@ class HeartbeatReceiver:
 
             return "Connected" if self.is_connected else "Disconnected"
 
-        except Exception as e:
+        except (OSError, TimeoutError, ValueError) as e:
             self.local_logger.error(f"Failed to receive heartbeat: {e}", True)
             return "Connected" if self.is_connected else "Disconnected"
 
