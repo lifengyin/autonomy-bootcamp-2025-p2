@@ -212,9 +212,7 @@ def main() -> int:
     is_disconnected = False
     while time.time() - start_time < MAIN_RUNTIME_SECONDS and not is_disconnected:
         try:
-            heartbeat_status = heartbeat_to_main_queue.queue.get(
-                timeout=MAIN_QUEUE_TIMEOUT_SECONDS
-            )
+            heartbeat_status = heartbeat_to_main_queue.queue.get(timeout=MAIN_QUEUE_TIMEOUT_SECONDS)
             main_logger.info(f"Receiver status: {heartbeat_status}")
             if heartbeat_status == "Disconnected":
                 is_disconnected = True

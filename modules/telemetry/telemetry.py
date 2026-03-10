@@ -114,12 +114,10 @@ class Telemetry:
                 if remaining <= 0:
                     break
 
-                # Read MAVLink message LOCAL_POSITION_NED (32)s  
+                # Read MAVLink message LOCAL_POSITION_NED (32)s
                 # Read MAVLink message ATTITUDE (30)
                 message = self.connection.recv_match(
-                    type=["LOCAL_POSITION_NED", "ATTITUDE"],
-                    blocking=True,
-                    timeout=remaining
+                    type=["LOCAL_POSITION_NED", "ATTITUDE"], blocking=True, timeout=remaining
                 )
                 if message is None:
                     break
@@ -133,7 +131,7 @@ class Telemetry:
                 # Small optimization to exit if we have both messages
                 if local_pos is not None and attitude is not None:
                     break
-            
+
             if local_pos is None or attitude is None:
                 self.local_logger.error("Failed to receive local position or attitude", True)
                 return None

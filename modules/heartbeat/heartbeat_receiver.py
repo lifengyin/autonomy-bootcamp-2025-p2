@@ -48,15 +48,13 @@ class HeartbeatReceiver:
         self.max_missed_heartbeats = 5
         self.is_connected = False
 
-    def run(
-        self
-    ):
+    def run(self):
         """
         Attempt to recieve a heartbeat message.
         If disconnected for over a threshold number of periods,
         the connection is considered disconnected.
         """
-        
+
         try:
             message = self.connection.recv_match(type="HEARTBEAT", blocking=True, timeout=1)
 
@@ -66,17 +64,19 @@ class HeartbeatReceiver:
             else:
                 self.missed_heartbeats += 1
                 self.local_logger.warning(
-                    f"Missed heartbeat {self.missed_heartbeats} (out of a max of {self.max_missed_heartbeats})", True
+                    f"Missed heartbeat {self.missed_heartbeats} (out of a max of {self.max_missed_heartbeats})",
+                    True,
                 )
-                
+
                 if self.missed_heartbeats >= self.max_missed_heartbeats:
                     self.is_connected = False
-            
+
             return "Connected" if self.is_connected else "Disconnected"
 
         except Exception as e:
             self.local_logger.error(f"Failed to receive heartbeat: {e}", True)
             return "Connected" if self.is_connected else "Disconnected"
+
 
 # =================================================================================================
 #                            ↑ BOOTCAMPERS MODIFY ABOVE THIS COMMENT ↑

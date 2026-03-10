@@ -53,14 +53,14 @@ def command_worker(
     # =============================================================================================
     #                          ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
     # =============================================================================================
-    
+
     # Instantiate class object (command.Command)
     result, command_object = command.Command.create(connection, target, local_logger)
     if not result:
         local_logger.error("Failed to create command object", True)
         return
     assert command_object is not None
-    
+
     # Main loop: do work.
     while not controller.is_exit_requested():
         try:
@@ -74,6 +74,7 @@ def command_worker(
         except Exception as e:
             local_logger.error(f"Failed to run command: {e}", True)
             return
+
 
 # =================================================================================================
 #                            ↑ BOOTCAMPERS MODIFY ABOVE THIS COMMENT ↑

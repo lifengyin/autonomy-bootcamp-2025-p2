@@ -131,7 +131,9 @@ def main() -> int:
     threading.Timer(TELEMETRY_PERIOD * NUM_TRIALS * 2 + NUM_FAILS, stop, (controller,)).start()
 
     # Read the main queue (worker outputs)
-    threading.Thread(target=read_queue, args=(output_queue, controller, main_logger), daemon=True).start()
+    threading.Thread(
+        target=read_queue, args=(output_queue, controller, main_logger), daemon=True
+    ).start()
 
     telemetry_worker.telemetry_worker(
         connection,

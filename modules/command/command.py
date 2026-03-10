@@ -93,7 +93,7 @@ class Command:  # pylint: disable=too-many-instance-attributes
                 self.velocity_sum_x += telemetry_data.x_velocity
                 self.velocity_sum_y += telemetry_data.y_velocity
                 self.velocity_sum_z += telemetry_data.z_velocity
-    
+
                 avg_velocity_x = self.velocity_sum_x / count
                 avg_velocity_y = self.velocity_sum_y / count
                 avg_velocity_z = self.velocity_sum_z / count
@@ -111,7 +111,7 @@ class Command:  # pylint: disable=too-many-instance-attributes
             # Altitude command: move up/down to target z.
             if telemetry_data.z is not None:
                 dz = self.target.z - telemetry_data.z
-                
+
                 # If too far, adjust altitude to target z
                 if abs(dz) > self.height_tolerance:
                     self.connection.mav.command_long_send(
@@ -130,9 +130,15 @@ class Command:  # pylint: disable=too-many-instance-attributes
                     return f"CHANGE ALTITUDE: {dz:.3f}"
 
             # Yaw command: rotate to face target.
-            if telemetry_data.x is not None and telemetry_data.y is not None and telemetry_data.yaw is not None:
+            if (
+                telemetry_data.x is not None
+                and telemetry_data.y is not None
+                and telemetry_data.yaw is not None
+            ):
                 # Use arctan to get desired yaw angle in rad
-                yaw_rad = math.atan2(self.target.y - telemetry_data.y, self.target.x - telemetry_data.x)
+                yaw_rad = math.atan2(
+                    self.target.y - telemetry_data.y, self.target.x - telemetry_data.x
+                )
                 # Find change in yaw in degrees.
                 yaw_delta_deg = math.degrees(yaw_rad - telemetry_data.yaw)
                 # Convert to angle from -180 to 180 deg.

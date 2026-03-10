@@ -12,6 +12,7 @@ from utilities.workers import worker_controller
 from . import heartbeat_sender
 from ..common.modules.logger import logger
 
+
 # =================================================================================================
 #                            ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
 # =================================================================================================
@@ -45,7 +46,7 @@ def heartbeat_sender_worker(
     # =============================================================================================
     #                          ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
     # =============================================================================================
-    
+
     # Instantiate class object (heartbeat_sender.HeartbeatSender)
     result, heartbeat_sender_object = heartbeat_sender.HeartbeatSender.create(connection)
     if not result:
@@ -62,6 +63,7 @@ def heartbeat_sender_worker(
         except Exception as e:
             local_logger.error(f"Failed to send heartbeat: {e}", True)
             return
+
 
 # =================================================================================================
 #                            ↑ BOOTCAMPERS MODIFY ABOVE THIS COMMENT ↑

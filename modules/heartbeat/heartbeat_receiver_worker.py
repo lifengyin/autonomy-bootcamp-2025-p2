@@ -49,7 +49,9 @@ def heartbeat_receiver_worker(
     #                          ↓ BOOTCAMPERS MODIFY BELOW THIS COMMENT ↓
     # =============================================================================================
     # Instantiate class object (heartbeat_receiver.HeartbeatReceiver)
-    result, heartbeat_receiver_object = heartbeat_receiver.HeartbeatReceiver.create(connection, local_logger)
+    result, heartbeat_receiver_object = heartbeat_receiver.HeartbeatReceiver.create(
+        connection, local_logger
+    )
     if not result:
         local_logger.error("Failed to create heartbeat receiver", True)
         return
@@ -64,6 +66,7 @@ def heartbeat_receiver_worker(
         except Exception as e:
             local_logger.error(f"Failed to receive heartbeat: {e}", True)
             return
+
 
 # =================================================================================================
 #                            ↑ BOOTCAMPERS MODIFY ABOVE THIS COMMENT ↑
