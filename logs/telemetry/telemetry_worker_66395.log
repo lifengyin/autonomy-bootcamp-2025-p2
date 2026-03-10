@@ -1,0 +1,5 @@
+16:00:50: [INFO] [/Users/lifengyin/dev/autonomy-bootcamp-2025-p2/modules/telemetry/telemetry_worker.py | telemetry_worker | 46] Logger initialized
+16:00:55: [ERROR] [/Users/lifengyin/dev/autonomy-bootcamp-2025-p2/modules/telemetry/telemetry.py | run | 138] Failed to receive local position or attitude
+16:00:56: [ERROR] [/Users/lifengyin/dev/autonomy-bootcamp-2025-p2/modules/telemetry/telemetry.py | run | 138] Failed to receive local position or attitude
+16:00:57: [ERROR] [/Users/lifengyin/dev/autonomy-bootcamp-2025-p2/modules/telemetry/telemetry.py | run | 138] Failed to receive local position or attitude
+16:01:03: [ERROR] [/Users/lifengyin/dev/autonomy-bootcamp-2025-p2/modules/telemetry/telemetry.py | run | 138] Failed to receive local position or attitude
