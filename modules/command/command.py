@@ -101,12 +101,7 @@ class Command:  # pylint: disable=too-many-instance-attributes
                 avg_velocity_z = self.velocity_sum_z / count
 
                 self.local_logger.info(
-                    (
-                        "Average velocity: "
-                        f"x: {avg_velocity_x:.3f} m/s"
-                        f"y: {avg_velocity_y:.3f} m/s"
-                        f"z: {avg_velocity_z:.3f} m/s"
-                    ),
+                    f"Average velocity: x: {avg_velocity_x:.3f} m/s, y: {avg_velocity_y:.3f} m/s, z: {avg_velocity_z:.3f} m/s",
                     True,
                 )
 
