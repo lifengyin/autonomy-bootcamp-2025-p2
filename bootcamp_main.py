@@ -216,10 +216,6 @@ def main() -> int:
             main_logger.info(f"Receiver status: {heartbeat_status}")
             if heartbeat_status == "Disconnected":
                 is_disconnected = True
-        except queue.Empty:
-            pass
-
-        try:
             command_output = command_to_main_queue.queue.get_nowait()
             main_logger.info(f"Command output: {command_output}")
         except queue.Empty:
