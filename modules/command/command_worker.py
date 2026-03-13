@@ -63,8 +63,8 @@ def command_worker(
 
     # Main loop: do work.
     while not controller.is_exit_requested():
+        controller.check_pause()
         try:
-            controller.check_pause()
             command_data = telemetry_queue.queue.get(timeout=0.1)
             result = command_object.run(command_data)
             if result != "NO_COMMAND":
